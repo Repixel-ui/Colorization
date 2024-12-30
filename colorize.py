@@ -83,4 +83,5 @@ def colorize_image():
     return jsonify({"message": "Colorized image successfully!", "output_image": output_image_path})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Ensure Flask listens on the correct port for cloud deployment
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
