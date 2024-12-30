@@ -1,1 +1,1 @@
-web: python colorize.py
+web: python colorize:app
