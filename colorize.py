@@ -2,20 +2,31 @@ import numpy as np
 import argparse
 import cv2
 import os
+import urllib.request
 
-DIR=r"C:\Users\manas\colorize_project"
-PROTOTXT = os.path.join(DIR,r"models/colorization_deploy_v2.prototxt")
-POINTS = os.path.join(DIR,r"models/pts_in_hull.npy")
-MODEL = os.path.join(DIR,r"models/colorization_release_v2.caffemodel")
+# Set the relative directory to the models folder
+DIR = os.path.dirname(os.path.realpath(__file__))  # Automatically gets the current directory
+PROTOTXT = os.path.join(DIR, "colorization_deploy_v2.prototxt")
+POINTS = os.path.join(DIR, "pts_in_hull.npy")
+
+# Dropbox direct download URL for the .caffemodel file
+DROPBOX_MODEL_URL = "https://www.dropbox.com/scl/fi/m7u4z5v993fuzslegdveb/colorization_release_v2.caffemodel?rlkey=yb592p9mmo5l9wf794vgsyihs&st=ezrhcl14&dl=1"
+MODEL_PATH = os.path.join(DIR, "models/colorization_release_v2.caffemodel")
+
+# Check if the model file exists, and if not, download it from Dropbox
+if not os.path.exists(MODEL_PATH):
+    print(f"Downloading {MODEL_PATH} from Dropbox...")
+    urllib.request.urlretrieve(DROPBOX_MODEL_URL, MODEL_PATH)
+    print(f"Download completed and saved to {MODEL_PATH}")
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", type=str, required=True,
-	help="path to input black and white image")
+    help="path to input black and white image")
 args = vars(ap.parse_args())
 
 # Load the Model
 print("Load model")
-net = cv2.dnn.readNetFromCaffe(PROTOTXT, MODEL)
+net = cv2.dnn.readNetFromCaffe(PROTOTXT, MODEL_PATH)
 pts = np.load(POINTS)
 
 # Load centers for ab channel quantization used for rebalancing.
