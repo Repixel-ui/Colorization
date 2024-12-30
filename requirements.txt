@@ -27,7 +27,7 @@ MarkupSafe==3.0.2
 matplotlib==3.10.0
 mdurl==0.1.2
 ml-dtypes==0.4.1
-numpy==1.24.0
+numpy==1.26.0
 opencv-contrib-python==4.5.5.64
 opt_einsum==3.4.0
 optree==0.13.1
