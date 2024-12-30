@@ -1,1 +1,1 @@
-web: python colorize:app
+web: gunicorn app:app
