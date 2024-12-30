@@ -16,8 +16,12 @@ MODEL_PATH = os.path.join(DIR, "models/colorization_release_v2.caffemodel")
 # Check if the model file exists, and if not, download it from Dropbox
 if not os.path.exists(MODEL_PATH):
     print(f"Downloading {MODEL_PATH} from Dropbox...")
-    urllib.request.urlretrieve(DROPBOX_MODEL_URL, MODEL_PATH)
-    print(f"Download completed and saved to {MODEL_PATH}")
+    try:
+        urllib.request.urlretrieve(DROPBOX_MODEL_URL, MODEL_PATH)
+        print(f"Download completed and saved to {MODEL_PATH}")
+    except Exception as e:
+        print(f"Error downloading model: {e}")
+        exit(1)
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", type=str, required=True,
@@ -59,6 +63,13 @@ colorized = np.clip(colorized, 0, 1)
 
 colorized = (255 * colorized).astype("uint8")
 
+# Save the output image (for server environments)
+output_image_path = os.path.join(DIR, "colorized_output.jpg")
+cv2.imwrite(output_image_path, colorized)
+print(f"Colorized image saved to {output_image_path}")
+
+# If in a local environment, display the images
 cv2.imshow("Original", image)
 cv2.imshow("Colorized", colorized)
 cv2.waitKey(0)
+cv2.destroyAllWindows()
